@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Israel District @ FIRST Championship</title>
+  <style>
+    body { font-family: Arial; background: #121212; color: #eee; padding: 20px; }
+    .division { margin-bottom: 30px; }
+    h2 { color: #00d4ff; }
+    .match { background: #1f1f1f; padding: 10px; margin: 5px 0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Israel District Matches @ FIRST Championship</h1>
+  <div id="matches"></div>
+
+  <script>
+    async function loadMatches() {
+  const res = await fetch('http://localhost:3001/israel-matches');
+  const data = await res.json();
+
+  const container = document.getElementById('matches');
+  Object.entries(data).forEach(([team, matches]) => {
+    const div = document.createElement('div');
+    div.className = 'team';
+    div.innerHTML = `<h2>${team}</h2>` +
+      matches.map(match => {
+        const red = match.alliances.red.team_keys.map(t => t.replace("frc", "")).join(', ');
+        const blue = match.alliances.blue.team_keys.map(t => t.replace("frc", "")).join(', ');
+        return `<div class="match">
+          <strong>${match.comp_level.toUpperCase()} ${match.match_number}</strong><br>
+          🔴 ${red} vs 🔵 ${blue}
+        </div>`;
+      }).join('');
+    container.appendChild(div);
+  });
+}
+
+
+    loadMatches();
+  </script>
+</body>
+</html>
